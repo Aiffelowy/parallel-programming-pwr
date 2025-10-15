@@ -25,6 +25,8 @@ class Mutex<T>(T value)
 class Semaphore<T>(T value, int max)
 {
     private readonly SemaphoreSlim locker = new(max);
+    public SemaphoreSlim getLocker() { return locker; }
+
 
     public class LockedSemaphore : IDisposable {
         private readonly SemaphoreSlim locker;
@@ -69,42 +71,75 @@ class Mine(int coal)
 {
     public int coal_count = coal;
 
+    public bool isEmpty = false;
+
     public int mine(int amount) {
         this.coal_count -= amount;
         return amount;
     }
 }
 
-class Worker(Mutex<WareHouse> warehouse_access, Semaphore<Mine> mine_access, int number)
+class Worker(Mutex<WareHouse> warehouse_access, Semaphore<Mine>[] mine_access, int number)
 {
     static readonly int TIME_TO_MINE = 10;
     static readonly int TIME_TO_UNLOAD = 10;
-    static readonly int TRAVEL_TIME = 10000;
+    static readonly int [] TRAVEL_TIME = { 10000, 15000 };
     public static readonly int CAPACITY = 200;
 
     private void print(string text) {
-        Cursor.print($"Worker {number}: {text}                                       ", number+3);
+        Cursor.print($"Worker {number}: {text}                                       ", number+6);
     }
-    public void work()
+    public void work(bool isRandom)
     {
         {
+            int chosenMine;
+            int[] mineCount = new int[2]{2000, 2000};
+            bool[] isClosed = new bool[2] { false, false };
             while (true)
             {
-                print("Traveling to the mine...");
-                Thread.Sleep(Worker.TRAVEL_TIME);
-                print("Waiting to access the mine...");
-                using (var lock_ = mine_access.lock_())
+                if (isClosed[0] && isClosed[1]) return;
+                else if (isClosed[0]) chosenMine = 1;
+                else if (isClosed[1]) chosenMine = 0;
+                else
+                {
+                    if (isRandom)
+                    {
+                        chosenMine = new Random().Next() % 2;
+                    }
+                    else
+                    {
+                        if (mine_access[0].getLocker().CurrentCount > mine_access[1].getLocker().CurrentCount)
+                        {
+                            chosenMine = 0;
+                        }
+                        else
+                        {
+                            chosenMine = 1;
+                        }
+                    }
+                }
+
+                print($"Traveling to the mine nr {chosenMine +1}...");
+                Thread.Sleep(Worker.TRAVEL_TIME[chosenMine]);
+                print($"Waiting to access the mine nr {chosenMine + 1}...");
+                using (var lock_ = mine_access[chosenMine].lock_())
                 {
                     if((~lock_).coal_count < Worker.CAPACITY)
                     {
-                        return;
+                        isClosed[chosenMine] = true;
+                        print($"Mine {chosenMine + 1} is empty, going back to the warehouse...");
                     }
-                    print("Mining...");
-                    Thread.Sleep(Worker.TIME_TO_MINE);
-                    (~lock_).mine(Worker.CAPACITY);
+                    else
+                    {
+                        print($"Mining in mine {chosenMine + 1}...");
+                        Thread.Sleep(Worker.TIME_TO_MINE);
+                        (~lock_).mine(Worker.CAPACITY);
+                        mineCount[chosenMine] = (~lock_).coal_count;
+                    }
                 }
                 print("Traveling to the warehouse....");
-                Thread.Sleep(Worker.TRAVEL_TIME);
+                Thread.Sleep(Worker.TRAVEL_TIME[0]);
+                if (isClosed[chosenMine]) continue;
                 print("Waiting to access the warehouse...");
                 using (var lock_ = warehouse_access.lock_())
                 {
@@ -129,14 +164,17 @@ class Solutions
         for (int i = 1; i <= maxWorkers; i++)
         {
             Mutex<WareHouse> warehouse = new(new WareHouse());
-            Semaphore<Mine> mine = new(new Mine(2000), 2);
-
+            var mine = new[]
+            {
+                new Semaphore<Mine>(new Mine(2000), 2),
+                new Semaphore<Mine>(new Mine(2000), 2)
+            };
             Stopwatch timeOperation = Stopwatch.StartNew();
             Task[] tasks = new Task[i];
             for (int j = 0; j < i; j++)
             {
                 var local_j = j;
-                tasks[j] = Task.Run(() => { var w = new Worker(warehouse, mine, local_j); w.work(); });
+                tasks[j] = Task.Run(() => { var w = new Worker(warehouse, mine, local_j); w.work(true); });
             }
             Cursor.print($"Simulation with {i} workers:", 0);
             while (true)
@@ -146,9 +184,14 @@ class Solutions
                     Cursor.print($"Coal in the warehouse: {(~lock_).coal_count}             ", 1);
                 }
 
-                using (var lock_ = mine.lock_())
+                using (var lock_ = mine[0].lock_())
                 {
-                    Cursor.print($"Coal left in the mine: {(~lock_).coal_count}            ", 2);
+                    Cursor.print($"Coal left in the first mine: {(~lock_).coal_count}            ", 2);
+                    if ((~lock_).coal_count < Worker.CAPACITY) { break; }
+                }
+                using (var lock_ = mine[1].lock_())
+                {
+                    Cursor.print($"Coal left in the second mine: {(~lock_).coal_count}            ", 3);
                     if ((~lock_).coal_count < Worker.CAPACITY) { break; }
                 }
             }

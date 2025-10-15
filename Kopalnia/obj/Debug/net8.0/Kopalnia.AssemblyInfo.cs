@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Kopalnia")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+96a0e4e6e2d595be8720db445732bf0695d73025")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+673dd94c2ca4529b09f1d5db98c1739500c53b69")]
 [assembly: System.Reflection.AssemblyProductAttribute("Kopalnia")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Kopalnia")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
