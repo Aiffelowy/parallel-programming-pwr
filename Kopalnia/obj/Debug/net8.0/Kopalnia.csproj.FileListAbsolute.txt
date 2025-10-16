@@ -1,0 +1,15 @@
+C:\Users\micha\Source\Repos\parallel-programming-pwr\Kopalnia\bin\Debug\net8.0\Kopalnia.exe
+C:\Users\micha\Source\Repos\parallel-programming-pwr\Kopalnia\bin\Debug\net8.0\Kopalnia.deps.json
+C:\Users\micha\Source\Repos\parallel-programming-pwr\Kopalnia\bin\Debug\net8.0\Kopalnia.runtimeconfig.json
+C:\Users\micha\Source\Repos\parallel-programming-pwr\Kopalnia\bin\Debug\net8.0\Kopalnia.dll
+C:\Users\micha\Source\Repos\parallel-programming-pwr\Kopalnia\bin\Debug\net8.0\Kopalnia.pdb
+C:\Users\micha\Source\Repos\parallel-programming-pwr\Kopalnia\obj\Debug\net8.0\Kopalnia.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\micha\Source\Repos\parallel-programming-pwr\Kopalnia\obj\Debug\net8.0\Kopalnia.AssemblyInfoInputs.cache
+C:\Users\micha\Source\Repos\parallel-programming-pwr\Kopalnia\obj\Debug\net8.0\Kopalnia.AssemblyInfo.cs
+C:\Users\micha\Source\Repos\parallel-programming-pwr\Kopalnia\obj\Debug\net8.0\Kopalnia.csproj.CoreCompileInputs.cache
+C:\Users\micha\Source\Repos\parallel-programming-pwr\Kopalnia\obj\Debug\net8.0\Kopalnia.sourcelink.json
+C:\Users\micha\Source\Repos\parallel-programming-pwr\Kopalnia\obj\Debug\net8.0\Kopalnia.dll
+C:\Users\micha\Source\Repos\parallel-programming-pwr\Kopalnia\obj\Debug\net8.0\refint\Kopalnia.dll
+C:\Users\micha\Source\Repos\parallel-programming-pwr\Kopalnia\obj\Debug\net8.0\Kopalnia.pdb
+C:\Users\micha\Source\Repos\parallel-programming-pwr\Kopalnia\obj\Debug\net8.0\Kopalnia.genruntimeconfig.cache
+C:\Users\micha\Source\Repos\parallel-programming-pwr\Kopalnia\obj\Debug\net8.0\ref\Kopalnia.dll

@@ -1,50 +1,5 @@
 ﻿using System.Diagnostics;
-
-class Mutex<T>(T value)
-{
-    private readonly object locker = new();
-
-    public class LockedMutex : IDisposable {
-        private readonly object locker;
-        private bool taken;
-        private readonly T value;
-
-        internal LockedMutex(T value, object locker) { this.locker = locker; this.value = value; Monitor.Enter(this.locker, ref this.taken); }
-        public static T operator ~(LockedMutex l) => l.value;
-        void IDisposable.Dispose()
-        {
-            if(this.taken) { Monitor.Exit(this.locker); this.taken = false; }
-            GC.SuppressFinalize(this);
-        }
-    }
-
-    public LockedMutex lock_() { return new LockedMutex(value, this.locker);  }
-}
-
-
-class Semaphore<T>(T value, int max)
-{
-    private readonly SemaphoreSlim locker = new(max);
-
-    public class LockedSemaphore : IDisposable {
-        private readonly SemaphoreSlim locker;
-        private readonly T value;
-
-        internal LockedSemaphore(T value, SemaphoreSlim locker) { this.locker = locker; this.value = value; this.locker.Wait(); }
-        public static T operator ~(LockedSemaphore l) => l.value;
-        void IDisposable.Dispose()
-        {
-            this.locker.Release();
-            GC.SuppressFinalize(this);
-        }
-    }
-
-    public LockedSemaphore lock_() {
-        return new LockedSemaphore(value, this.locker);
-    }
-}
-
-
+using Kopalnia;
 
 class Cursor
 {
@@ -56,8 +11,6 @@ class Cursor
         Console.WriteLine(text);
     }
 }
-
-
 
 class WareHouse {
     public int coal_count = 0;
