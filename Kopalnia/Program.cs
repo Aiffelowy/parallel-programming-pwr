@@ -154,11 +154,12 @@ class Worker(Mutex<WareHouse> warehouse_access, Semaphore<Mine>[] mine_access, i
 
 class Solutions
 {
-    public static void thirdTask(int maxWorkers)
+    public static void thirdTask(int maxWorkers, bool isRandom)
     {
         int[] time = new int[maxWorkers];
         float[] acceleration = new float[maxWorkers];
         float[] efficiency = new float[maxWorkers];
+        String assignType = isRandom ? "random" : "most slots";
 
 
         for (int i = 1; i <= maxWorkers; i++)
@@ -174,9 +175,9 @@ class Solutions
             for (int j = 0; j < i; j++)
             {
                 var local_j = j;
-                tasks[j] = Task.Run(() => { var w = new Worker(warehouse, mine, local_j); w.work(true); });
+                tasks[j] = Task.Run(() => { var w = new Worker(warehouse, mine, local_j); w.work(isRandom); });
             }
-            Cursor.print($"Simulation with {i} workers:", 0);
+            Cursor.print($"Simulation with {i} workers: ({assignType})", 0);
             while (true)
             {
                 using (var lock_ = warehouse.lock_())
@@ -203,9 +204,10 @@ class Solutions
             efficiency[i - 1] = acceleration[i - 1] / i * 100;
         }
         Console.Clear();
+        Console.WriteLine($"Results of the simulation with {assignType} assignment:");
         for (int j = 0; j < maxWorkers; j++)
         {
-            Console.WriteLine($"Workers: {j + 1}, Time: {time[j]} ms, Acceleration: {acceleration[j]:F2}, Efficiency: {efficiency[j]:F2} %\n");
+            Console.WriteLine($"Workers: {j + 1}, Time: {time[j]} ms, Acceleration: {acceleration[j]:F2}, Efficiency: {efficiency[j]:F2} %");
         }
     }
 }
@@ -213,7 +215,7 @@ class Solutions
 class Program
 {
     static void Main(string[] args) {
-        Solutions.thirdTask(4);
+        Solutions.thirdTask(4, true);
         //Mutex<WareHouse> warehouse = new(new WareHouse());
         //Semaphore<Mine> mine = new(new Mine(20000), 2);
         //Semaphore<Mine> secondMine = new(new Mine(20000), 2);
