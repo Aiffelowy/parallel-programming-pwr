@@ -1,1 +1,11 @@
 .vs
+
+client/target
+client/devenv*
+client/.devenv*
+client/.envrc
+
+server/devenv*
+server/.devenv*
+server/.envrc
+
