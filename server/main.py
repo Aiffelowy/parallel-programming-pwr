@@ -33,6 +33,7 @@ def recv_data(conn):
     length = struct.unpack('!I', raw_len)[0]
     data = b''
     while len(data) < length:
+        print("huh")
         packet = conn.recv(length - len(data))
         if not packet:
             return None
@@ -42,6 +43,7 @@ def recv_data(conn):
 def send_data(conn, data: bytes):
     length = struct.pack('!I', len(data))
     conn.sendall(length)
+    print(len(data))
     conn.sendall(data)
 
 def encode_tile_png(tile: np.ndarray) -> bytes:
